@@ -70,7 +70,7 @@ app.post('/:entidade', validaTabelas, async (req, res) => {
   }
 });
 
-// UPDATE atributos
+// UPDATE (atributos por id)
 app.put('/:entidade/:id', validaTabelas, async (req, res) => {
   const { entidade, id } = req.params;
   const dados = req.body;
@@ -89,7 +89,7 @@ app.put('/:entidade/:id', validaTabelas, async (req, res) => {
   }
 });
 
-// DELETE
+// DELETE (por id)
 app.delete('/:entidade/:id', validaTabelas, async (req, res) => {
   const { entidade, id } = req.params;
 
