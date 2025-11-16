@@ -15,6 +15,15 @@ const pool = new Pool({
 
 const porta = process.env.APPPORT;
 
+app.use((req, res, next) => {
+  const apiKey = req.headers['x-api-key'];
+  if (apiKey !== process.env.APIKEY) {
+    return res.status(403).json({ error: 'Proibido!!! Erro de autenticação.' });
+  }
+  next();
+});
+
+
 // READ (Select all)
 app.get('/cartas', async (req, res) => {
   try {
