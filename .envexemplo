@@ -1,0 +1,6 @@
+PGUSER=postgres
+PGHOST=localhost
+PGDATABASE=database
+PGPASSWORD=senha
+PGPORT=5432
+APPPORT=3080
