@@ -1,3 +1,5 @@
+const validaTabelas = require('./middleware/validaTabelas');
+
 const express = require('express');
 const { Pool } = require('pg');
 require('dotenv').config();
@@ -23,55 +25,64 @@ app.use((req, res, next) => {
   next();
 });
 
-
 // READ (Select all)
-app.get('/cartas', async (req, res) => {
+app.get('/:entidade', validaTabelas, async (req, res) => {
+  const { entidade } = req.params;
+
   try {
-    const result = await pool.query('SELECT * FROM carta');
+    const result = await pool.query(`SELECT * FROM ${entidade}`);
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// CREATE (Insert)
-app.post('/cartas', async (req, res) => {
-  const carta = req.body;
+// READ (Select one por id)
+app.get('/:entidade/:id', validaTabelas, async (req, res) => {
+  const { entidade, id } = req.params;
+
   try {
-    const result = await pool.query(
-      'INSERT INTO carta (valor, naipe, cima, baixo) VALUES ($1, $2, $3, $4) RETURNING *',
-      [carta.valor, carta.naipe, carta.cima, carta.baixo]
-    );
+    const result = await pool.query(`SELECT * FROM ${entidade} WHERE id = $1`, [id]);
     res.json(result.rows[0]);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// UPDATE cima
-app.put('/cartas/cima/:id', async (req, res) => {
-  const { id } = req.params;
-  const { cima } = req.body;
+// CREATE
+app.post('/:entidade', validaTabelas, async (req, res) => {
+  const { entidade } = req.params;
+  const dados = req.body;
+
   try {
-    const result = await pool.query(
-      'UPDATE carta SET cima = $1 WHERE id = $2 RETURNING *',
-      [cima, id]
-    );
+    const keys = Object.keys(dados);
+    const values = Object.values(dados);
+    const placeholders = keys.map((_, i) => `$${i + 1}`).join(', ');
+
+    const query = `INSERT INTO ${entidade} (${keys.join(', ')})
+                   VALUES (${placeholders})
+                   RETURNING *`;
+
+    const result = await pool.query(query, values);
     res.json(result.rows[0]);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// UPDATE cima
-app.put('/cartas/baixo/:id', async (req, res) => {
-  const { id } = req.params;
-  const { baixo } = req.body;
+// UPDATE atributos
+app.put('/:entidade/:id', validaTabelas, async (req, res) => {
+  const { entidade, id } = req.params;
+  const dados = req.body;
+
   try {
-    const result = await pool.query(
-      'UPDATE carta SET baixo = $1 WHERE id = $2 RETURNING *',
-      [baixo, id]
-    );
+    const keys = Object.keys(dados);
+    const values = Object.values(dados);
+    const setString = keys.map((key, i) => `${key} = $${i + 1}`).join(', ');
+
+    const query = `UPDATE ${entidade} SET ${setString} WHERE id = $${keys.length + 1} RETURNING *`;
+
+    const result = await pool.query(query, [...values, id]);
     res.json(result.rows[0]);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -79,11 +90,12 @@ app.put('/cartas/baixo/:id', async (req, res) => {
 });
 
 // DELETE
-app.delete('/cartas/:id', async (req, res) => {
-  const { id } = req.params;
+app.delete('/:entidade/:id', validaTabelas, async (req, res) => {
+  const { entidade, id } = req.params;
+
   try {
-    await pool.query('DELETE FROM carta WHERE id = $1', [id]);
-    res.json({ message: 'Carta deletada' });
+    await pool.query(`DELETE FROM ${entidade} WHERE id = $1`, [id]);
+    res.json({ message: 'Deleted successfully' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

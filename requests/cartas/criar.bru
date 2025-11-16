@@ -1,11 +1,24 @@
 meta {
   name: criar
   type: http
-  seq: 2
+  seq: 3
 }
 
 post {
-  url: 
-  body: none
+  url: {{base-url}}/carta
+  body: json
   auth: none
+}
+
+headers {
+  x-api-key: APIKEY
+}
+
+body:json {
+  {
+    "valor": 1,
+    "naipe": "TESTES",
+    "cima": "Testando a criacao de cartas",
+    "baixo": "Tomara que não dê tudo errado"
+  }
 }

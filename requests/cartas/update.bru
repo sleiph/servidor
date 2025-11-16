@@ -1,0 +1,26 @@
+meta {
+  name: update
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{base-url}}/carta/1
+  body: json
+  auth: none
+}
+
+headers {
+  x-api-key: APIKEY
+}
+
+body:json {
+  {
+    "cima": "Mudando a descrição pra cima da carta com id 1",
+    "baixo": "Mudando a descrição pra baixo da carta com id 1"
+  }
+}
+
+body:text {
+  Mudando descrição da carta pra cima
+}
