@@ -1,4 +1,4 @@
-const tabelasValidas = ['carta'];
+const tabelasValidas = ['carta', 'usuario', 'sala'];
 
 function validaTabelas(req, res, next) {
   const tabela = req.params.entidade;

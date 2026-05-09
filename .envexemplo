@@ -1,7 +1,8 @@
-PGUSER=postgres
 PGHOST=localhost
 PGDATABASE=database
+PGUSER=postgres
 PGPASSWORD=senha
 PGPORT=5432
 APPPORT=3080
 APIKEY=chavedaapi
+CORS_ORIGEM=http://localhost:3000

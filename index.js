@@ -1,6 +1,8 @@
 const validaTabelas = require('./middleware/validaTabelas');
 
 const express = require('express');
+const cors = require('cors');
+
 const { Pool } = require('pg');
 require('dotenv').config();
 
@@ -16,6 +18,10 @@ const pool = new Pool({
 });
 
 const porta = process.env.APPPORT;
+
+app.use(cors({
+  origin: process.env.CORS_ORIGEM
+}));
 
 app.use((req, res, next) => {
   const apiKey = req.headers['x-api-key'];
