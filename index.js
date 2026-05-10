@@ -31,6 +31,8 @@ app.use((req, res, next) => {
   next();
 });
 
+// API //
+
 // READ (Select all)
 app.get('/api/:entidade', async (req, res) => {
   const { entidade } = req.params;
@@ -137,6 +139,18 @@ app.post('/planning/login', async (req, res) => {
     });
   } catch (error) {
     res.status(401).json({ error: error.message });
+  }
+});
+
+app.get('/planning/sala/:hash', async (req, res) => {
+  const { hash } = req.params.sala;
+
+  try {
+    const result = await pool.query(`SELECT * FROM sala WHERE hash = $1`, [hash]);
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error(err); 
+    res.status(500).json({ error: err.message });
   }
 });
 

@@ -65,11 +65,10 @@ async function createUsuarioESala(userData) {
       'INSERT INTO usuario (nome, senha, sala_id) VALUES ($1, $2, $3) RETURNING *',
       [nome, senhaHasheada, salaResult.id]
     );
-    const { senha: _, ...usuarioSemSenha } = userResult.rows[0];
     
     return {
-      usuario: usuarioSemSenha,
-      sala: salaResult
+      nome: nome,
+      sala: salaResult.hash
     };
     
   } catch (error) {
@@ -106,9 +105,20 @@ async function loginUsuario(loginData) {
       throw new Error('Usuario ou senha incorretos');
     }
     
-    const { senha: _, ...usuarioSemSenha } = usuario;
+    // Fetch sala data to get the hash
+    const salaResult = await pool.query(
+      'SELECT * FROM sala WHERE id = $1',
+      [usuario.sala_id]
+    );
     
-    return usuarioSemSenha;
+    if (salaResult.rows.length === 0) {
+      throw new Error('Sala não encontrada');
+    }
+    
+    return {
+      nome: usuario.nome,
+      sala: salaResult.rows[0].hash
+    };
     
   } catch (error) {
     console.log(error);
