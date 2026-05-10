@@ -1,4 +1,4 @@
-const validaTabelas = require('./middleware/validaTabelas');
+const { createUsuarioESala, loginUsuario } = require('./middleware/usuarioHelpers');
 
 const express = require('express');
 const cors = require('cors');
@@ -32,7 +32,7 @@ app.use((req, res, next) => {
 });
 
 // READ (Select all)
-app.get('/:entidade', validaTabelas, async (req, res) => {
+app.get('/api/:entidade', async (req, res) => {
   const { entidade } = req.params;
 
   try {
@@ -44,7 +44,7 @@ app.get('/:entidade', validaTabelas, async (req, res) => {
 });
 
 // READ (Select one por id)
-app.get('/:entidade/:id', validaTabelas, async (req, res) => {
+app.get('/api/:entidade/:id', async (req, res) => {
   const { entidade, id } = req.params;
 
   try {
@@ -56,7 +56,7 @@ app.get('/:entidade/:id', validaTabelas, async (req, res) => {
 });
 
 // CREATE
-app.post('/:entidade', validaTabelas, async (req, res) => {
+app.post('/api/:entidade', async (req, res) => {
   const { entidade } = req.params;
   const dados = req.body;
 
@@ -77,7 +77,7 @@ app.post('/:entidade', validaTabelas, async (req, res) => {
 });
 
 // UPDATE (atributos por id)
-app.put('/:entidade/:id', validaTabelas, async (req, res) => {
+app.put('/api/:entidade/:id', async (req, res) => {
   const { entidade, id } = req.params;
   const dados = req.body;
 
@@ -96,7 +96,7 @@ app.put('/:entidade/:id', validaTabelas, async (req, res) => {
 });
 
 // DELETE (por id)
-app.delete('/:entidade/:id', validaTabelas, async (req, res) => {
+app.delete('/api/:entidade/:id', async (req, res) => {
   const { entidade, id } = req.params;
 
   try {
@@ -104,6 +104,39 @@ app.delete('/:entidade/:id', validaTabelas, async (req, res) => {
     res.json({ message: 'Deleted successfully' });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+});
+
+// PLANNING //
+
+// CREATE usuario com sala
+app.post('/planning/criarusuario', async (req, res) => {
+  const userData = req.body;
+
+  try {
+    const result = await createUsuarioESala(userData);
+    res.json({
+      message: 'Usuario e sala criados com sucesso',
+      usuario: result.usuario,
+      sala: result.sala
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Login usuario
+app.post('/planning/login', async (req, res) => {
+  const loginData = req.body;
+
+  try {
+    const usuario = await loginUsuario(loginData);
+    res.json({
+      message: 'Login realizado com sucesso',
+      usuario: usuario
+    });
+  } catch (error) {
+    res.status(401).json({ error: error.message });
   }
 });
 
