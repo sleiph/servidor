@@ -1,4 +1,4 @@
-CREATE TABLE carta (
+CREATE TABLE carta if not exists (
   id SERIAL PRIMARY KEY,
   valor int8 NOT NULL,
   naipe VARCHAR(8),

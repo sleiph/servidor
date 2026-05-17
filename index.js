@@ -143,7 +143,7 @@ app.post('/planning/login', async (req, res) => {
 });
 
 app.get('/planning/sala/:hash', async (req, res) => {
-  const { hash } = req.params.sala;
+  const { hash } = req.params;
 
   try {
     const result = await pool.query(`SELECT * FROM sala WHERE hash = $1`, [hash]);

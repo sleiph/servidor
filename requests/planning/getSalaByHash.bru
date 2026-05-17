@@ -1,0 +1,24 @@
+meta {
+  name: getSalaByHash
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base-url}}/planning/sala/:hash
+  body: none
+  auth: inherit
+}
+
+params:path {
+  hash: 6618f9d0d1ae5377d1ad43ed4a0448ef
+}
+
+headers {
+  x-api-key: APIKEY
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
