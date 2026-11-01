@@ -2,6 +2,7 @@ const { createUsuarioESala, loginUsuario } = require('./middleware/usuarioHelper
 
 const express = require('express');
 const cors = require('cors');
+require('./planningPokerServer');
 
 const { Pool } = require('pg');
 require('dotenv').config();
